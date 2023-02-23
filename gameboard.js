@@ -1,5 +1,6 @@
-export function createGameBoard() {
-	let board = {};
+export function createGameBoard(dim = 8) {
+    let board = {};
+    board.dim = dim;
 	board.ships = []; // array of Ships
 	board.occupied = []; // array of coordinates occupied by ships
 	board.placeShip = function (createShip, length, start) {
@@ -7,7 +8,7 @@ export function createGameBoard() {
 		let ship = createShip(length, start);
 
 		// add ship to board if positions are unoccupied
-		if (isShipPositionValid(board.occupied, ship.position)) {
+		if (isShipPositionValid(board, ship.position)) {
 			board.occupied = board.occupied.concat(ship.position);
 			board.ships.push(ship);
 		}
@@ -16,10 +17,14 @@ export function createGameBoard() {
 	return board;
 }
 
-function isShipPositionValid(occupied, shipPos) {
-	occupied = JSON.stringify(occupied);
-	for (let i = 0; i < shipPos.length; i++) {
-		let pos = JSON.stringify(shipPos[i]);
+function isShipPositionValid(board, shipPos) {
+	let occupied = JSON.stringify(board.occupied);
+    for (let i = 0; i < shipPos.length; i++) {
+        // if x or y of shipPos[i] exceeds dim, return false
+        let pos = shipPos[i];
+        if (pos[0] >= board.dim || pos[1] >= board.dim) return false
+
+		pos = JSON.stringify(pos);
 		if (occupied.indexOf(pos) != -1) return false;
 	}
 	return true;
