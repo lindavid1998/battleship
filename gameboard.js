@@ -5,7 +5,7 @@ export function createGameBoard(dim = 8) {
 	board.ships = []; // array of Ships
 	board.occupied = []; // array of coordinates occupied by ships
 	board.misses = []; // array of coordinates
-	board.hits = [];
+	board.hits = []; // array of coordinates
 
 	board.placeShip = function (createShip, length, start) {
 		// create ship
@@ -34,6 +34,15 @@ export function createGameBoard(dim = 8) {
 				}
 			}
 		}
+	};
+
+	board.isAllSunk = function () {
+		let ships = board.ships;
+		for (let i = 0; i < ships.length; i++) {
+			if (ships[i].isSunk() == false) return false;
+		}
+
+		return true;
 	};
 
 	return board;

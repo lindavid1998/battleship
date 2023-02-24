@@ -99,3 +99,18 @@ describe('game receives attack', () => {
 		]);
 	});
 });
+
+test('game reports whether all ships sunk', () => {
+	let board = createGameBoard();
+	board.placeShip(createShip, 2, [1, 1]);
+	board.placeShip(createShip, 2, [3, 2]);
+	let attacks = [
+		[1, 1],
+		[2, 1],
+		[3, 2],
+		[4, 2],
+	];
+	expect(board.isAllSunk()).toBe(false);
+	attacks.forEach((attack) => board.receiveAttack(attack));
+	expect(board.isAllSunk()).toBe(true);
+});
