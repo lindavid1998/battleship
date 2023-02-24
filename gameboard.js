@@ -1,8 +1,12 @@
 export function createGameBoard(dim = 8) {
-    let board = {};
-    board.dim = dim;
+	let board = {};
+
+	board.dim = dim;
 	board.ships = []; // array of Ships
 	board.occupied = []; // array of coordinates occupied by ships
+	board.misses = []; // array of coordinates
+	board.hits = [];
+
 	board.placeShip = function (createShip, length, start) {
 		// create ship
 		let ship = createShip(length, start);
@@ -14,17 +18,46 @@ export function createGameBoard(dim = 8) {
 		}
 	};
 
+	board.receiveAttack = function (coord) {
+		if (isMiss(board, coord)) {
+			board.misses.push(coord);
+		}
+
+		if (isValidHit(board, coord)) {
+			board.hits.push(coord);
+			for (let i = 0; i < board.ships.length; i++) {
+				let ship = board.ships[i];
+				for (let j = 0; j < ship.position.length; j++) {
+					if (JSON.stringify(ship.position[j]) == JSON.stringify(coord)) {
+						ship.hit();
+					}
+				}
+			}
+		}
+	};
+
 	return board;
+}
+
+function isMiss(board, coord) {
+	let occupied = JSON.stringify(board.occupied);
+	return occupied.indexOf(coord) == -1;
+}
+
+function isValidHit(board, coord) {
+	let hits = JSON.stringify(board.hits);
+	return hits.indexOf(coord) == -1;
 }
 
 function isShipPositionValid(board, shipPos) {
 	let occupied = JSON.stringify(board.occupied);
-    for (let i = 0; i < shipPos.length; i++) {
-        // if x or y of shipPos[i] exceeds dim, return false
-        let pos = shipPos[i];
-        if (pos[0] >= board.dim || pos[1] >= board.dim) return false
+	for (let i = 0; i < shipPos.length; i++) {
+		let pos = shipPos[i];
 
-		pos = JSON.stringify(pos);
+		// return false if ship out of bounds
+		if (pos[0] >= board.dim || pos[1] >= board.dim) return false;
+
+		// return false if position already occupied
 		if (occupied.indexOf(pos) != -1) return false;
 	}
 	return true;
