@@ -1,4 +1,4 @@
-export function createGameBoard(dim = 8) {
+export function createBoard(dim = 8) {
 	let board = {};
 
 	board.dim = dim;
@@ -8,10 +8,8 @@ export function createGameBoard(dim = 8) {
 	board.hits = []; // array of coordinates
 
 	board.placeShip = function (createShip, length, start) {
-		// create ship
 		let ship = createShip(length, start);
 
-		// add ship to board if positions are unoccupied
 		if (isShipPositionValid(board, ship.position)) {
 			board.occupied = board.occupied.concat(ship.position);
 			board.ships.push(ship);

@@ -1,8 +1,8 @@
-import { createGameBoard } from './gameboard';
+import { createBoard } from './gameboard';
 import { createShip } from './ship';
 
 describe('ship placement', () => {
-	let board = createGameBoard();
+	let board = createBoard();
 	let createShip = jest.fn();
 	const shipOne = {
 		position: [
@@ -66,7 +66,7 @@ describe('ship placement', () => {
 
 describe('game receives attack', () => {
 	// create game
-	let board = createGameBoard();
+	let board = createBoard();
 	board.placeShip(createShip, 2, [1, 1]); // 1,1 and 2,1
 	board.placeShip(createShip, 2, [1, 2]); // 1,2 and 2,2
 
@@ -101,7 +101,7 @@ describe('game receives attack', () => {
 });
 
 test('game reports whether all ships sunk', () => {
-	let board = createGameBoard();
+	let board = createBoard();
 	board.placeShip(createShip, 2, [1, 1]);
 	board.placeShip(createShip, 2, [3, 2]);
 	let attacks = [
