@@ -2,6 +2,7 @@ import { game } from './game';
 
 let p1;
 let p2;
+let dom;
 
 beforeAll(() => {
 	p1 = {
@@ -19,6 +20,10 @@ beforeAll(() => {
 			isAllSunk: jest.fn(() => false),
 		},
   };
+
+  dom = {
+		update: jest.fn(() => {}),
+  };
   
 });
 
@@ -34,14 +39,22 @@ test('game is over when one player has all ships sunk', () => {
 });
 
 test('round is ended early if player one wins on turn', () => {
-	game.playRound(p1, p2);
+	game.playRound(p1, p2, dom);
 	expect(p1.attack).toHaveBeenCalledTimes(1);
-	expect(p2.attackRandom).toHaveBeenCalledTimes(0);
+  expect(p2.attackRandom).toHaveBeenCalledTimes(0);
+  expect(dom.update).toHaveBeenCalledTimes(1);
 });
 
 test('game calls attack moves for each player in a full round played', () => {
   p2.board.isAllSunk = jest.fn(() => false);
-  game.playRound(p1, p2);
+  game.playRound(p1, p2, dom);
 	expect(p1.attack).toHaveBeenCalledTimes(1);
 	expect(p2.attackRandom).toHaveBeenCalledTimes(1);
 });
+
+test('game calls to update DOM after each move in a round', () => {
+  game.playRound(p1, p2, dom);
+  expect(dom.update).toHaveBeenCalledTimes(2);
+  expect(dom.update).toHaveBeenCalledWith(p1);
+  expect(dom.update).toHaveBeenCalledWith(p2);
+})

@@ -1,6 +1,7 @@
 import { createBoard } from './gameboard';
 import { createPlayer } from './player';
 import { createShip } from './ship';
+import { dom } from './dom';
 
 export const game = (() => {
 	const p1 = createPlayer(createBoard);
@@ -15,14 +16,13 @@ export const game = (() => {
 		return p1.board.isAllSunk() ? p2 : p1;
 	};
 
-	const playRound = function (p1, p2) {
-		// get user input
-		let input = [0, 0]; // dummy value for now
-
-		p1.attack(p2, input);
+  const playRound = function (p1, p2, dom, target = null) {
+		p1.attack(p2, target);
+		dom.update(p2);
 		if (game.isOver(p1, p2)) return;
 
 		p2.attackRandom(p1);
+		dom.update(p1);
 		if (game.isOver(p1, p2)) return;
 	};
 
