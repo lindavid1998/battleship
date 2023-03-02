@@ -1,3 +1,5 @@
+import { game } from './game';
+
 export const dom = (() => {
 	const setup = function (parentDiv, player) {
 		let boardDiv = document.createElement('div');
@@ -11,6 +13,9 @@ export const dom = (() => {
 			let gridPos = document.createElement('div');
 			gridPos.classList.add('grid-pos');
 			gridPos.setAttribute('id', i);
+			if (player.isComputer) {
+				gridPos.addEventListener('click', clickHandler);
+			}
 			boardDiv.appendChild(gridPos);
 			i++;
 		}
@@ -18,7 +23,9 @@ export const dom = (() => {
 		// iterate through occupied positions and mark
 		board.occupied.forEach((pos) => {
 			let i = convertCoordToIndex(board.dim, pos);
-			boardDiv.querySelectorAll('.grid-pos')[i].classList.add('occupied');
+			if (!player.isComputer) {
+				boardDiv.querySelectorAll('.grid-pos')[i].classList.add('occupied');
+			}
 		});
 
 		parentDiv.appendChild(boardDiv);
@@ -41,9 +48,27 @@ export const dom = (() => {
 		});
 	};
 
+	const end = function (game, div) {
+		// remove event listener from p2 board
+		let gridUnits = document.querySelectorAll('.grid-pos');
+		gridUnits.forEach((unit) => {
+			unit.removeEventListener('click', clickHandler);
+		});
+
+		// get winner
+		let winner = game.getWinner(game.p1, game.p2);
+
+		// show winner on DOM
+		let winnerDiv = document.createElement('div');
+		winnerDiv.classList.add('winner');
+		winnerDiv.textContent = winner.name;
+		div.appendChild(winnerDiv);
+	};
+
 	return {
 		setup,
 		update,
+		end,
 	};
 })();
 
@@ -53,6 +78,11 @@ export function convertCoordToIndex(dim, pos) {
 
 export function convertIndexToCoord(dim, index) {
 	let x = index % dim;
-	let y = Math.floor(index / dim)
-	return [x, y]
+	let y = Math.floor(index / dim);
+	return [x, y];
+}
+
+function clickHandler(e) {
+	let target = convertIndexToCoord(game.p1.board.dim, e.target.id);
+	game.playRound(game.p1, game.p2, dom, target);
 }

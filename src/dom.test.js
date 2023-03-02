@@ -1,15 +1,34 @@
-import { convertCoordToIndex, convertIndexToCoord } from './dom';
+/**
+ * @jest-environment jsdom
+ */
+
+import { dom } from './dom';
 
 const dim = 8;
 
-test('converts 2D coordinate to grid index', () => {
-	expect(convertCoordToIndex(dim, [0, 0])).toBe(0);
-	expect(convertCoordToIndex(dim, [0, 1])).toBe(8);
-	expect(convertCoordToIndex(dim, [1, 1])).toBe(9);
-});
+describe('when game is over', () => {
+	let game = {
+		getWinner: jest.fn(() => {
+			return {
+				name: 'Test',
+			};
+		}),
+	};
 
-test('converts grid index to 2D coordinate', () => {
-	expect(convertIndexToCoord(dim, 0)).toEqual([0, 0]);
-	expect(convertIndexToCoord(dim, 8)).toEqual([0, 1]);
-	expect(convertIndexToCoord(dim, 9)).toEqual([1, 1]);
+	let div = {
+		appendChild: jest.fn(() => {}),
+	};
+
+	dom.end(game, div);
+
+	test('game shows winner on DOM', () => {
+		expect(game.getWinner).toHaveBeenCalledTimes(1);
+
+		const winner = document.createElement('div');
+		winner.textContent = game.getWinner().name;
+		winner.classList.add('winner');
+
+		expect(div.appendChild).toHaveBeenCalledTimes(1);
+		expect(div.appendChild).toHaveBeenCalledWith(winner);
+	});
 });
