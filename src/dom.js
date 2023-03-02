@@ -1,4 +1,5 @@
 import { game } from './game';
+import { createShip } from './ship';
 
 export const dom = (() => {
 	const setup = function (parentDiv, player) {
@@ -13,21 +14,14 @@ export const dom = (() => {
 			let gridPos = document.createElement('div');
 			gridPos.classList.add('grid-pos');
 			gridPos.setAttribute('id', i);
-			if (player.isComputer) {
-				gridPos.addEventListener('click', clickHandler);
+			if (!player.isComputer) {
+				gridPos.addEventListener('click', placeShipHandler);
 			}
 			boardDiv.appendChild(gridPos);
 			i++;
 		}
 
-		// iterate through occupied positions and mark
-		board.occupied.forEach((pos) => {
-			let i = convertCoordToIndex(board.dim, pos);
-			if (!player.isComputer) {
-				boardDiv.querySelectorAll('.grid-pos')[i].classList.add('occupied');
-			}
-		});
-
+		dom.refreshOccupied(boardDiv, player);
 		parentDiv.appendChild(boardDiv);
 	};
 
@@ -65,18 +59,29 @@ export const dom = (() => {
 		div.appendChild(winnerDiv);
 	};
 
+	const refreshOccupied = function (boardDiv, player) {
+		let board = player.board;
+		board.occupied.forEach((pos) => {
+			let i = convertCoordToIndex(board.dim, pos);
+			if (!player.isComputer) {
+				boardDiv.querySelectorAll('.grid-pos')[i].classList.add('occupied');
+			}
+		});
+	};
+
 	return {
 		setup,
 		update,
 		end,
+		refreshOccupied,
 	};
 })();
 
-export function convertCoordToIndex(dim, pos) {
+function convertCoordToIndex(dim, pos) {
 	return pos[0] + dim * pos[1];
 }
 
-export function convertIndexToCoord(dim, index) {
+function convertIndexToCoord(dim, index) {
 	let x = index % dim;
 	let y = Math.floor(index / dim);
 	return [x, y];
@@ -85,4 +90,38 @@ export function convertIndexToCoord(dim, index) {
 function clickHandler(e) {
 	let target = convertIndexToCoord(game.p1.board.dim, e.target.id);
 	game.playRound(game.p1, game.p2, dom, target);
+	e.target.removeEventListener('click', clickHandler)
+}
+
+function placeShipHandler(e) {
+	let board = game.p1.board;
+	let dim = board.dim;
+	let p1Div = document.getElementById(game.p1.name);
+	let p2Div = document.getElementById(game.p2.name);
+	let temp = board.ships.length;
+
+	board.placeShip(
+		createShip,
+		game.shipLengths[0],
+		convertIndexToCoord(dim, e.target.id)
+	);
+
+	if (board.ships.length != temp) {
+		game.shipLengths.shift();
+		dom.refreshOccupied(p1Div, game.p1);
+	}
+
+	if (game.shipLengths == 0) {
+		// remove event listeners from p1 board
+		let p1Grid = p1Div.querySelectorAll('.grid-pos');
+		p1Grid.forEach((grid) =>
+			grid.removeEventListener('click', placeShipHandler)
+		);
+
+		/// add event listeners to p2 board
+		let p2Grid = p2Div.querySelectorAll('.grid-pos');
+		p2Grid.forEach((grid) =>
+			grid.addEventListener('click', clickHandler)
+		);
+	}
 }
