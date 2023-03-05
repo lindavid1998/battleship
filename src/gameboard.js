@@ -7,8 +7,8 @@ export function createBoard(dim = 8) {
 	board.misses = []; // array of coordinates
 	board.hits = []; // array of coordinates
 
-	board.placeShip = function (createShip, length, start) {
-		let ship = createShip(length, start);
+	board.placeShip = function (createShip, length, start, isHorizontal = true) {
+		let ship = createShip(length, start, isHorizontal);
 
 		if (isShipPositionValid(board, ship.position)) {
 			board.occupied = board.occupied.concat(ship.position);

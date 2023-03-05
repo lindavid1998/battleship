@@ -90,7 +90,7 @@ function convertIndexToCoord(dim, index) {
 function clickHandler(e) {
 	let target = convertIndexToCoord(game.p1.board.dim, e.target.id);
 	game.playRound(game.p1, game.p2, dom, target);
-	e.target.removeEventListener('click', clickHandler)
+	e.target.removeEventListener('click', clickHandler);
 }
 
 function placeShipHandler(e) {
@@ -100,10 +100,15 @@ function placeShipHandler(e) {
 	let p2Div = document.getElementById(game.p2.name);
 	let temp = board.ships.length;
 
+	// get orientation
+	let orientation = document.querySelector('.orientation').textContent;
+	let isHorizontal = orientation == 'Horizontal';
+
 	board.placeShip(
 		createShip,
 		game.shipLengths[0],
-		convertIndexToCoord(dim, e.target.id)
+		convertIndexToCoord(dim, e.target.id),
+		isHorizontal
 	);
 
 	if (board.ships.length != temp) {
@@ -120,8 +125,6 @@ function placeShipHandler(e) {
 
 		/// add event listeners to p2 board
 		let p2Grid = p2Div.querySelectorAll('.grid-pos');
-		p2Grid.forEach((grid) =>
-			grid.addEventListener('click', clickHandler)
-		);
+		p2Grid.forEach((grid) => grid.addEventListener('click', clickHandler));
 	}
 }

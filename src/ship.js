@@ -1,4 +1,4 @@
-export const createShip = (length, pos) => {
+export const createShip = (length, pos, isHorizontal = true) => {
 	let ship = {};
 	ship.length = length;
 	ship.numOfHits = 0;
@@ -7,7 +7,11 @@ export const createShip = (length, pos) => {
 	let [x, y] = pos;
 	for (let i = 0; i < length; i++) {
 		ship.position.push([x, y]);
-		x += 1;
+		if (isHorizontal) {
+			x += 1;
+		} else {
+			y += 1;
+		}
 	}
 
 	ship.hit = function () {

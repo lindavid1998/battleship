@@ -23,14 +23,35 @@ describe('ship placement', () => {
 			[4, 2],
 		],
 	};
+	const shipFour = {
+		position: [
+			[5, 3],
+			[5, 4],
+		],
+	};
 
-	test('ship is placed at specified coordinates', () => {
+	afterEach(() => {
+		jest.resetAllMocks();
+		board.ships = [];
+		board.occupied = [];
+	});
+
+	test('ship is placed horizontally specified coordinates', () => {
 		createShip.mockReturnValue(shipOne);
 		expect(board.ships.length).toBe(0);
 		board.placeShip(createShip, 3, [1, 1]);
-		expect(createShip).toHaveBeenCalledWith(3, [1, 1]);
+		expect(createShip).toHaveBeenCalledWith(3, [1, 1], true);
 		expect(board.ships.length).toBe(1);
 		expect(board.ships[0]).toMatchObject(shipOne);
+	});
+
+	test('ship is placed vertically at specified coordinates', () => {
+		createShip.mockReturnValue(shipFour);
+		expect(board.ships.length).toBe(0);
+		board.placeShip(createShip, 2, [5, 3], false);
+		expect(createShip).toHaveBeenCalledWith(2, [5, 3], false);
+		expect(board.ships.length).toBe(1);
+		expect(board.ships[0]).toMatchObject(shipFour);
 	});
 
 	test('ship is not placed if it overlaps with existing ship', () => {
@@ -39,8 +60,8 @@ describe('ship placement', () => {
 			.mockReturnValueOnce(shipTwo)
 			.mockReturnValueOnce(shipThree);
 
-		expect(board.ships.length).toBe(1);
-		board.placeShip(createShip); // should not register
+		expect(board.ships.length).toBe(0);
+		board.placeShip(createShip); // should register
 		expect(board.ships.length).toBe(1);
 		board.placeShip(createShip); // should not register
 		board.placeShip(createShip); // should register
@@ -50,17 +71,17 @@ describe('ship placement', () => {
 	});
 
 	test('ship is not placed if length goes beyond dimensions of board', () => {
-		const shipFour = {
+		const shipFive = {
 			position: [
 				[7, 1],
 				[8, 1],
 			],
 		};
-		createShip.mockReturnValue(shipFour);
+		createShip.mockReturnValue(shipFive);
 
-		expect(board.ships.length).toBe(2);
-		board.placeShip(createShip, 2, [5, 1]); // should not register
-		expect(board.ships.length).toBe(2);
+		expect(board.ships.length).toBe(0);
+		board.placeShip(createShip); // should not register
+		expect(board.ships.length).toBe(0);
 	});
 });
 
