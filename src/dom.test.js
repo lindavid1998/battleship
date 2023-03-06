@@ -25,7 +25,7 @@ describe('when game is over', () => {
 		expect(game.getWinner).toHaveBeenCalledTimes(1);
 
 		const winner = document.createElement('div');
-		winner.textContent = game.getWinner().name;
+		winner.textContent = `${game.getWinner().name} wins!`;
 		winner.classList.add('winner');
 
 		expect(div.appendChild).toHaveBeenCalledTimes(1);

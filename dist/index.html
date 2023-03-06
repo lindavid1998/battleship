@@ -15,12 +15,18 @@
 				background-color: rgb(1, 1, 14);
 			}
 
+			.game, .settings {
+				width: fit-content;
+				margin: 0 auto;
+			}
+
 			.board {
+				width: 280px;
+				height: 280px;
 				display: grid;
-				grid-template-columns: repeat(var(--grid-size), var(--box-size));
-				grid-template-rows: repeat(var(--grid-size), var(--box-size));
-				gap: 5px;
-				margin-bottom: 50px;
+				grid-template-columns: repeat(var(--grid-size), auto);
+				grid-template-rows: repeat(var(--grid-size), auto);
+				margin-bottom: 40px;
 			}
 
 			.grid-pos {
@@ -32,7 +38,7 @@
 				justify-content: center;
 
 				font-size: 2rem;
-				transition: 0.5s all;
+				transition: 0.4s all;
 			}
 
 			.grid-pos:hover {
@@ -54,19 +60,33 @@
 			.winner {
 				font-size: 2rem;
 				color: white;
+				text-align: center;
 			}
-
-			.orientation {
+			
+			button {
+				appearance: none;
 				color: white;
+				outline: none;
+				border-radius: 5px;
+				border: 1px solid black;
+				background-color: rgb(192, 0, 0);
+				padding: 8px;
+				margin: 8px;
 			}
 
+			button:hover {
+				background-color: red;
+			}
 		</style>
 	</head>
 	<body>
-		<div class="settings">
-			<button class="orientation">Horizontal</button>
+		<div class="container">
+			<div class="settings">
+				<button class="orientation">Horizontal</button>
+				<button class="reset">Reset</button>
+			</div>
+			<div class="game"></div>
 		</div>
-		<div class="game"></div>
 		<script src="main.js"></script>
 	</body>
 </html>

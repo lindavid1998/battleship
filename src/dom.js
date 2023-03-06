@@ -55,7 +55,7 @@ export const dom = (() => {
 		// show winner on DOM
 		let winnerDiv = document.createElement('div');
 		winnerDiv.classList.add('winner');
-		winnerDiv.textContent = winner.name;
+		winnerDiv.textContent = `${winner.name} wins!`;
 		div.appendChild(winnerDiv);
 	};
 
