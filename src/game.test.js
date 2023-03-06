@@ -104,3 +104,10 @@ describe('in a full round where player 2 wins', () => {
 		expect(game.getWinner(p1, p2)).toEqual(p2);
 	});
 });
+
+test('game is created with 3 ships placed randomly on computer board', () => {
+	expect(game.p2.board.ships.length).toBe(3);
+	expect(game.p2.board.ships[0].length).toBe(3);
+	expect(game.p2.board.ships[1].length).toBe(3);
+	expect(game.p2.board.ships[2].length).toBe(4);
+})

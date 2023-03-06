@@ -7,7 +7,7 @@ export const game = (() => {
 	const p2 = createPlayer(createBoard, 'Computer');
 	let shipLengths = [3, 3, 4];
 	p2.isComputer = true;
-	addShips(p2);
+	addShipsToCompBoard(p2, shipLengths);
 
 	const isOver = function (p1, p2) {
 		return p1.board.isAllSunk() || p2.board.isAllSunk();
@@ -17,8 +17,8 @@ export const game = (() => {
 		return p1.board.isAllSunk() ? p2 : p1;
 	};
 
-  const playRound = function (p1, p2, dom, target = null) {
-    p1.attack(p2, target);
+	const playRound = function (p1, p2, dom, target = null) {
+		p1.attack(p2, target);
 		dom.update(p2);
 		if (game.isOver(p1, p2)) {
 			dom.end(game, document.querySelector('.game'));
@@ -42,8 +42,22 @@ export const game = (() => {
 	};
 })();
 
-function addShips(p2) {
-	p2.board.placeShip(createShip, 4, [0, 0]);
-	p2.board.placeShip(createShip, 3, [4, 2]);
-	p2.board.placeShip(createShip, 3, [2, 4]);
+function getRandCoordinate(dim) {
+	let x = Math.floor(Math.random() * (dim - 1));
+	let y = Math.floor(Math.random() * (dim - 1));
+	return [x, y]
 }
+
+function addShipsToCompBoard(p2, lengths) {
+	let dim = p2.board.dim;
+	
+	lengths.forEach((len) => {
+		let ships = p2.board.ships;
+		let temp = ships.length;
+		while (ships.length == temp) {
+			let coord = getRandCoordinate(dim);
+			let isHorizontal = Math.random() >= 0.5;
+			p2.board.placeShip(createShip, len, coord, isHorizontal);
+		}
+	});
+};
