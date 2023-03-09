@@ -19,7 +19,7 @@ beforeEach(() => {
 
 	p2 = {
 		name: 'Bar',
-		attackRandom: jest.fn(() => {}),
+		attack: jest.fn(() => {}),
 		board: {
 			isAllSunk: jest.fn(() => false),
 		},
@@ -43,7 +43,7 @@ describe('in a full round where neither player wins', () => {
 	test('game calls attack moves for each player once', () => {
 		game.playRound(p1, p2, dom);
 		expect(p1.attack).toHaveBeenCalledTimes(1);
-		expect(p2.attackRandom).toHaveBeenCalledTimes(1);
+		expect(p2.attack).toHaveBeenCalledTimes(1);
 	});
 
 	test('game makes calls to update DOM after each move', () => {
@@ -62,7 +62,7 @@ describe('in a half round where player one wins', () => {
 	test('only player 1 makes an attack', () => {
 		game.playRound(p1, p2, dom);
 		expect(p1.attack).toHaveBeenCalledTimes(1);
-		expect(p2.attackRandom).toHaveBeenCalledTimes(0);
+		expect(p2.attack).toHaveBeenCalledTimes(0);
 	});
 
 	test('game makes calls to update DOM', () => {
@@ -80,7 +80,7 @@ describe('in a half round where player one wins', () => {
 
 describe('in a full round where player 2 wins', () => {
 	beforeEach(() => {
-		p2.attackRandom = jest.fn(() => {
+		p2.attack = jest.fn(() => {
 			p1.board.isAllSunk = jest.fn(() => true);
 		});
 		p2.board.isAllSunk = jest.fn(() => false);
@@ -89,7 +89,7 @@ describe('in a full round where player 2 wins', () => {
 	test('both players attack', () => {
 		game.playRound(p1, p2, dom);
 		expect(p1.attack).toHaveBeenCalledTimes(1);
-		expect(p2.attackRandom).toHaveBeenCalledTimes(1);
+		expect(p2.attack).toHaveBeenCalledTimes(1);
 	});
 
 	test('game makes calls to update DOM', () => {

@@ -102,12 +102,15 @@ describe('game receives attack', () => {
 
 		expect(board.ships[0].numOfHits).toBe(1); // expect 1st ship was not hit
 		expect(board.ships[1].numOfHits).toBe(1); // expect 2nd ship was hit
+
+		expect(board.hits.length).toBe(2);
 	});
 
 	test('game does not record hit if position has already been hit', () => {
 		board.receiveAttack([1, 1]);
 		expect(board.ships[0].numOfHits).toBe(1); // 1st ship did not gain another hit
-		expect(board.ships[1].numOfHits).toBe(1); // expect 2nd ship was hit
+		expect(board.hits.length).toBe(2); // total number of hits is unchanged
+		expect(board.misses.length).toBe(0); // total number of misses is unchanged
 	});
 
 	test('game records a miss', () => {
@@ -118,6 +121,7 @@ describe('game receives attack', () => {
 			[3, 3],
 			[4, 3],
 		]);
+		expect(board.hits.length).toBe(2); // total number of hits is unchanged
 	});
 });
 

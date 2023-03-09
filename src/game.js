@@ -1,5 +1,5 @@
 import { createBoard } from './gameboard';
-import { createPlayer } from './player';
+import { createPlayer, getRandCoord } from './player';
 import { createShip } from './ship';
 
 export const game = (() => {
@@ -25,7 +25,7 @@ export const game = (() => {
 			return;
 		}
 
-		p2.attackRandom(p1);
+		p2.attack(p1);
 		dom.update(p1);
 		if (game.isOver(p1, p2)) {
 			dom.end(game, document.querySelector('.game'));
@@ -42,22 +42,16 @@ export const game = (() => {
 	};
 })();
 
-function getRandCoordinate(dim) {
-	let x = Math.floor(Math.random() * (dim - 1));
-	let y = Math.floor(Math.random() * (dim - 1));
-	return [x, y]
-}
-
 function addShipsToCompBoard(p2, lengths) {
 	let dim = p2.board.dim;
-	
+
 	lengths.forEach((len) => {
 		let ships = p2.board.ships;
 		let temp = ships.length;
 		while (ships.length == temp) {
-			let coord = getRandCoordinate(dim);
+			let coord = getRandCoord(dim);
 			let isHorizontal = Math.random() >= 0.5;
 			p2.board.placeShip(createShip, len, coord, isHorizontal);
 		}
 	});
-};
+}

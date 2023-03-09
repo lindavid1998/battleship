@@ -19,6 +19,7 @@ export function createBoard(dim = 8) {
 	board.receiveAttack = function (coord) {
 		if (isMiss(board, coord)) {
 			board.misses.push(coord);
+			return
 		}
 
 		if (isValidHit(board, coord)) {
