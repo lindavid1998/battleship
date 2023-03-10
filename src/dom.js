@@ -81,7 +81,7 @@ function convertCoordToIndex(dim, pos) {
 	return pos[0] + dim * pos[1];
 }
 
-function convertIndexToCoord(dim, index) {
+export function convertIndexToCoord(dim, index) {
 	let x = index % dim;
 	let y = Math.floor(index / dim);
 	return [x, y];
@@ -101,9 +101,9 @@ function placeShipHandler(e) {
 	let temp = board.ships.length;
 
 	// get orientation
-	let orientation = document.querySelector('.orientation').textContent;
-	let isHorizontal = orientation == 'Horizontal';
+	let isHorizontal = getOrientation();
 
+	// place ship 
 	board.placeShip(
 		createShip,
 		game.shipLengths[0],
@@ -111,6 +111,7 @@ function placeShipHandler(e) {
 		isHorizontal
 	);
 
+	// if successful placement, refresh occupied 
 	if (board.ships.length != temp) {
 		game.shipLengths.shift();
 		dom.refreshOccupied(p1Div, game.p1);
@@ -127,4 +128,9 @@ function placeShipHandler(e) {
 		let p2Grid = p2Div.querySelectorAll('.grid-pos');
 		p2Grid.forEach((grid) => grid.addEventListener('click', clickHandler));
 	}
+}
+
+export function getOrientation() {
+	let orientation = document.querySelector('.orientation').textContent;
+	return orientation == 'Horizontal';
 }
