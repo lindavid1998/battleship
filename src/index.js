@@ -1,7 +1,7 @@
 import { game } from './game';
 import { dom, convertIndexToCoord, getOrientation } from './dom';
+import './style.css';
 
-// set up game
 let gameDiv = document.querySelector('.game');
 dom.setup(gameDiv, game.p1);
 dom.setup(gameDiv, game.p2);
@@ -16,10 +16,15 @@ orientation.addEventListener('click', (e) => {
 	}
 });
 
-let gridPos = document.querySelectorAll('.grid-pos');
+let playerBoard = document.querySelector('#You.board')
+let gridPos = playerBoard.querySelectorAll('.grid-pos');
 gridPos.forEach((pos) => {
 	pos.addEventListener('mouseenter', toggleHoverEffect);
 });
+
+document.querySelector('.reset').addEventListener('click', () => {
+	window.location.reload();
+})
 
 function toggleHoverEffect() {
 	// remove any existing hover effects
@@ -33,17 +38,13 @@ function toggleHoverEffect() {
 	let parent = this.parentNode;
 	let index = Array.prototype.indexOf.call(parent.children, this);
 
-	if (isHorizontal) {
-		if (isWithinHorizonRange(dim, index, shipLength)) {
-			for (let i = index; i < index + shipLength; i++) {
-				parent.children[i].classList.add('placeholder');
-			}
+	if (isHorizontal && isWithinHorizonRange(dim, index, shipLength)) {
+		for (let i = index; i < index + shipLength; i++) {
+			parent.children[i].classList.add('placeholder');
 		}
-	} else {
-		if (isWithinVertRange(dim, index, shipLength)) {
-			for (let i = index; i < index + dim * shipLength; i = i + dim) {
-				parent.children[i].classList.add('placeholder');
-			}
+	} else if (!isHorizontal && isWithinVertRange(dim, index, shipLength)) {
+		for (let i = index; i < index + dim * shipLength; i = i + dim) {
+			parent.children[i].classList.add('placeholder');
 		}
 	}
 }

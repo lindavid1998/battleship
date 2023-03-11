@@ -1,10 +1,13 @@
 import { game } from './game';
-import { createShip } from './ship';
+import { createShip } from './factories/ship';
 
 export const dom = (() => {
 	const setup = function (parentDiv, player) {
 		let boardDiv = document.createElement('div');
 		boardDiv.classList.add('board');
+		if (player.isComputer) {
+			boardDiv.style.display = 'none';
+		}
 		boardDiv.setAttribute('id', player.name);
 
 		let board = player.board;
@@ -21,11 +24,19 @@ export const dom = (() => {
 			i++;
 		}
 
-		dom.refreshOccupied(boardDiv, player);
+		let name = document.createElement('div');
+		name.textContent = player.name;
+		name.classList.add('name');
+		if (player.isComputer) {
+			name.style.display = 'none';
+		}
+
+		// dom.refreshOccupied(boardDiv, player);
 		parentDiv.appendChild(boardDiv);
+		parentDiv.appendChild(name);
 	};
 
-	const update = function (player) {
+	const updateHitAndMiss = function (player) {
 		let boardDiv = document.getElementById(player.name);
 		let gridUnits = boardDiv.querySelectorAll('.grid-pos');
 		let board = player.board;
@@ -42,24 +53,8 @@ export const dom = (() => {
 		});
 	};
 
-	const end = function (game, div) {
-		// remove event listener from p2 board
-		let gridUnits = document.querySelectorAll('.grid-pos');
-		gridUnits.forEach((unit) => {
-			unit.removeEventListener('click', clickHandler);
-		});
-
-		// get winner
-		let winner = game.getWinner(game.p1, game.p2);
-
-		// show winner on DOM
-		let winnerDiv = document.createElement('div');
-		winnerDiv.classList.add('winner');
-		winnerDiv.textContent = `${winner.name} wins!`;
-		div.appendChild(winnerDiv);
-	};
-
-	const refreshOccupied = function (boardDiv, player) {
+	const updateOccupied = function (player) {
+		let boardDiv = document.getElementById(player.name);
 		let board = player.board;
 		board.occupied.forEach((pos) => {
 			let i = convertCoordToIndex(board.dim, pos);
@@ -69,11 +64,23 @@ export const dom = (() => {
 		});
 	};
 
+	const end = function (game, div) {
+		// remove event listener from p2 board
+		let gridPos = document.querySelectorAll('.grid-pos');
+		gridPos.forEach((pos) => {
+			pos.removeEventListener('click', playRoundHandler);
+		});
+
+		// show winner on page
+		let winner = game.getWinner(game.p1, game.p2);
+		div.textContent = `Winner: ${winner.name}`;
+	};
+
 	return {
 		setup,
-		update,
+		updateHitAndMiss,
 		end,
-		refreshOccupied,
+		updateOccupied,
 	};
 })();
 
@@ -87,23 +94,20 @@ export function convertIndexToCoord(dim, index) {
 	return [x, y];
 }
 
-function clickHandler(e) {
+function playRoundHandler(e) {
 	let target = convertIndexToCoord(game.p1.board.dim, e.target.id);
 	game.playRound(game.p1, game.p2, dom, target);
-	e.target.removeEventListener('click', clickHandler);
+	e.target.removeEventListener('click', playRoundHandler);
 }
 
 function placeShipHandler(e) {
 	let board = game.p1.board;
 	let dim = board.dim;
 	let p1Div = document.getElementById(game.p1.name);
-	let p2Div = document.getElementById(game.p2.name);
 	let temp = board.ships.length;
-
-	// get orientation
 	let isHorizontal = getOrientation();
 
-	// place ship 
+	// place ship
 	board.placeShip(
 		createShip,
 		game.shipLengths[0],
@@ -111,12 +115,13 @@ function placeShipHandler(e) {
 		isHorizontal
 	);
 
-	// if successful placement, refresh occupied 
+	// if successful placement, refresh occupied
 	if (board.ships.length != temp) {
 		game.shipLengths.shift();
-		dom.refreshOccupied(p1Div, game.p1);
+		dom.updateOccupied(game.p1);
 	}
 
+	// if all ships placed, start game
 	if (game.shipLengths == 0) {
 		// remove event listeners from p1 board
 		let p1Grid = p1Div.querySelectorAll('.grid-pos');
@@ -124,9 +129,15 @@ function placeShipHandler(e) {
 			grid.removeEventListener('click', placeShipHandler)
 		);
 
-		/// add event listeners to p2 board
-		let p2Grid = p2Div.querySelectorAll('.grid-pos');
-		p2Grid.forEach((grid) => grid.addEventListener('click', clickHandler));
+		/// add event listeners to computer board
+		let p2Board = document.querySelector('#Computer.board');
+		let p2Grid = p2Board.querySelectorAll('.grid-pos');
+		p2Grid.forEach((grid) => grid.addEventListener('click', playRoundHandler));
+
+		p2Board.style.display = 'grid';
+		document.querySelectorAll('.name')[1].style.display = 'flex';
+		document.querySelector('.orientation').style.display = 'none';
+		document.querySelector('.status').textContent = 'Game is live!';
 	}
 }
 

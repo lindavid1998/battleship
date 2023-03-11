@@ -1,4 +1,4 @@
-export const createPlayer = (createBoard, name = 'Foo') => {
+export const createPlayer = (createBoard, name = 'You') => {
 	let player = {};
 	player.name = name;
 	player.isComputer = false;

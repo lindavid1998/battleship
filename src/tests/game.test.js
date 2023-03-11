@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import { game } from './game';
+import { game } from '../game';
 
 let p1;
 let p2;
@@ -26,7 +26,7 @@ beforeEach(() => {
 	};
 
 	dom = {
-		update: jest.fn(() => {}),
+		updateHitAndMiss: jest.fn(() => {}),
 		end: jest.fn(() => {}),
 	};
 });
@@ -48,9 +48,9 @@ describe('in a full round where neither player wins', () => {
 
 	test('game makes calls to update DOM after each move', () => {
 		game.playRound(p1, p2, dom);
-		expect(dom.update).toHaveBeenCalledTimes(2);
-		expect(dom.update).toHaveBeenCalledWith(p1);
-		expect(dom.update).toHaveBeenCalledWith(p2);
+		expect(dom.updateHitAndMiss).toHaveBeenCalledTimes(2);
+		expect(dom.updateHitAndMiss).toHaveBeenCalledWith(p1);
+		expect(dom.updateHitAndMiss).toHaveBeenCalledWith(p2);
 	});
 });
 
@@ -67,7 +67,7 @@ describe('in a half round where player one wins', () => {
 
 	test('game makes calls to update DOM', () => {
 		game.playRound(p1, p2, dom);
-		expect(dom.update).toHaveBeenCalledTimes(1);
+		expect(dom.updateHitAndMiss).toHaveBeenCalledTimes(1);
 		expect(dom.end).toHaveBeenCalledTimes(1);
 	});
 
@@ -94,7 +94,7 @@ describe('in a full round where player 2 wins', () => {
 
 	test('game makes calls to update DOM', () => {
 		game.playRound(p1, p2, dom);
-		expect(dom.update).toHaveBeenCalledTimes(2);
+		expect(dom.updateHitAndMiss).toHaveBeenCalledTimes(2);
 		expect(dom.end).toHaveBeenCalledTimes(1);
 	});
 

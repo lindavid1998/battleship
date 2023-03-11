@@ -1,5 +1,5 @@
-import { createBoard } from './gameboard';
-import { createShip } from './ship';
+import { createBoard } from '../factories/gameboard';
+import { createShip } from '../factories/ship';
 
 describe('ship placement', () => {
 	let board = createBoard();

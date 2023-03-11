@@ -1,4 +1,4 @@
-import { createShip } from './ship';
+import { createShip } from '../factories/ship';
 
 let ship = createShip(3, [1, 0]);
 

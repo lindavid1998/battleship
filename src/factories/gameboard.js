@@ -2,10 +2,10 @@ export function createBoard(dim = 8) {
 	let board = {};
 
 	board.dim = dim;
-	board.ships = []; // array of Ships
-	board.occupied = []; // array of coordinates occupied by ships
-	board.misses = []; // array of coordinates
-	board.hits = []; // array of coordinates
+	board.ships = []; 
+	board.occupied = []; 
+	board.misses = []; 
+	board.hits = []; 
 
 	board.placeShip = function (createShip, length, start, isHorizontal = true) {
 		let ship = createShip(length, start, isHorizontal);

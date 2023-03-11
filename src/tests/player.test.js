@@ -1,4 +1,4 @@
-import { createPlayer } from './player';
+import { createPlayer } from '../factories/player';
 
 let player;
 let enemy;
@@ -72,7 +72,7 @@ describe('computer can attack', () => {
 			enemy.board.misses.push(coord);
 		});
 
-		player.hitQueue = []
+		player.hitQueue = [];
 
 		expect(enemy.board.misses.length).toBe(0);
 		player.attack(enemy);

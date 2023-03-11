@@ -1,6 +1,6 @@
-import { createBoard } from './gameboard';
-import { createPlayer, getRandCoord } from './player';
-import { createShip } from './ship';
+import { createBoard } from './factories/gameboard';
+import { createPlayer, getRandCoord } from './factories/player';
+import { createShip } from './factories/ship';
 
 export const game = (() => {
 	const p1 = createPlayer(createBoard);
@@ -19,16 +19,16 @@ export const game = (() => {
 
 	const playRound = function (p1, p2, dom, target = null) {
 		p1.attack(p2, target);
-		dom.update(p2);
+		dom.updateHitAndMiss(p2);
 		if (game.isOver(p1, p2)) {
-			dom.end(game, document.querySelector('.game'));
+			dom.end(game, document.querySelector('.status'));
 			return;
 		}
 
 		p2.attack(p1);
-		dom.update(p1);
+		dom.updateHitAndMiss(p1);
 		if (game.isOver(p1, p2)) {
-			dom.end(game, document.querySelector('.game'));
+			dom.end(game, document.querySelector('.status'));
 		}
 	};
 
