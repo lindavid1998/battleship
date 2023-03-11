@@ -31,7 +31,6 @@ export const dom = (() => {
 			name.style.display = 'none';
 		}
 
-		// dom.refreshOccupied(boardDiv, player);
 		parentDiv.appendChild(boardDiv);
 		parentDiv.appendChild(name);
 	};
@@ -79,8 +78,8 @@ export const dom = (() => {
 	return {
 		setup,
 		updateHitAndMiss,
-		end,
 		updateOccupied,
+		end,
 	};
 })();
 
